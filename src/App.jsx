@@ -1,15 +1,29 @@
 import { Routes, Route } from "react-router";
 import "./App.css";
-import Home from "./pages/Home";
-import PageNotFound from "./pages/PageNotFound";
+import { Home, Landing, PageNotFound, Signup, Login, Profile } from "./pages";
+import { AuthProvider } from "./components/AuthContext";
+import ProtectedRoutes from "./components/ProtectedRoutes";
+import BlockLogin from "./components/BlockLogin";
 
 function App() {
   return (
-    <Routes>
-      <Route path="/" element={<Home />} />
+    <AuthProvider>
+      <Routes>
+        <Route path="/" element={<Landing />} />
 
-      <Route path="*" element={<PageNotFound />} />
-    </Routes>
+        <Route element={<ProtectedRoutes />}>
+          <Route path="/home" element={<Home />} />
+          <Route path="/profile" element={<Profile />} />
+        </Route>
+
+        <Route element={<BlockLogin />}>
+          <Route path="/signup" element={<Signup />} />
+          <Route path="/login" element={<Login />} />
+        </Route>
+
+        <Route path="*" element={<PageNotFound />} />
+      </Routes>
+    </AuthProvider>
   );
 }
 
