@@ -4,6 +4,9 @@ import { FiHome } from "react-icons/fi";
 import { GoPlusCircle } from "react-icons/go";
 import { CiSearch } from "react-icons/ci";
 import AddPost from "../components/AddPost";
+import Post from "../components/Post";
+import noPhotoImage from "../assets/images/no-photo.jpg"; // Adjust path based on file structure
+
 function Home() {
   const dialogRef = useRef(null);
   const openDialog = () => {
@@ -33,7 +36,26 @@ function Home() {
           <h2 className="notifications-title">Notifications</h2>
         </div>
       </div>
-      <div className="infinite-scroll"></div>
+      <div className="infinite-scroll">
+        <Post
+          userImage={noPhotoImage}
+          username="johndoe"
+          postImage={noPhotoImage}
+          postText="Optional caption text here"
+        />
+        <Post
+          userImage={noPhotoImage}
+          username="johndoe"
+          postImage={noPhotoImage}
+          postText="Optional caption text here"
+        />
+        <Post
+          userImage={noPhotoImage}
+          username="johndoe"
+          postImage={noPhotoImage}
+          postText="Optional caption text here"
+        />
+      </div>
     </div>
   );
 }

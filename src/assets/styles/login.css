@@ -1,0 +1,159 @@
+/* this file is the style to the login and signup pages */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+.background {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background-color: #f5f5f5;
+    padding: 20px;
+}
+
+.card {
+    border-radius: 15px;
+    min-height: 500px;
+    height: auto;
+    width: 80%;
+    padding: 40px 20px;
+    background-color: #f9e9d6;
+    opacity: 0.9;
+    text-align: center; 
+}
+
+.card h1 {
+    font-size: 4rem;
+    margin-bottom: 20px;
+    color: #2b1b07;
+    font-weight: bold;
+}
+
+.box {
+    background-color: #e8b06c;
+    padding: 40px;
+    border-radius: 25px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 600px;
+    max-height: calc(100% - 40px);
+    margin: 0 auto;
+    overflow-y: auto;
+}
+
+
+.box h2 {
+    font-size: 2rem;
+    font-weight: bold;
+    margin-bottom: 20px;
+    font-family: Arial, sans-serif;
+    color: #2b1b07;
+}
+
+
+.box input {
+    background-color: #dec9ac;
+    width: 100%;
+    height: 50px;
+    margin-bottom: 20px;
+    border-radius: 18px;
+    padding: 10px;
+    font-size: 1rem;
+    color: #2b1b07;
+    font-family: Arial, sans-serif;
+}
+
+
+.box input::placeholder {
+    color: #563e20;
+}
+
+
+.toggle-button {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 1.5rem;
+    color: #563e20;
+    padding: 5px;
+}
+
+
+.box .submit {
+    font-family: Arial, sans-serif;
+    background-color: #dec9ac;
+    margin-bottom: 20px;
+    border-radius: 18px;
+    padding: 10px 30px;
+    font-size: 1rem;
+    border: none;
+    cursor: pointer;
+    width: 100%;
+    max-width: 200px;
+    transition: background-color 0.3s ease;
+}
+
+.box .submit:hover {
+    background-color: #d1b388;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .card {
+        padding: 20px;
+    }
+
+    .box {
+        padding: 30px;
+    }
+
+    .card h1 {
+        font-size: 2.5rem;
+    }
+
+    .box h2 {
+        font-size: 1.8rem;
+    }
+
+    .box input {
+        height: 45px;
+        font-size: 0.9rem;
+    }
+
+    .box .submit {
+        font-size: 0.9rem;
+        padding: 8px 20px;
+    }
+}
+
+@media (max-width: 480px) {
+    .card h1 {
+        font-size: 2rem;
+    }
+
+    .box {
+        padding: 20px;
+    }
+
+    .box h2 {
+        font-size: 1.5rem;
+    }
+
+    .box input {
+        height: 40px;
+        font-size: 0.8rem;
+    }
+
+    .box .submit {
+        font-size: 0.8rem;
+        padding: 6px 15px;
+    }
+}
