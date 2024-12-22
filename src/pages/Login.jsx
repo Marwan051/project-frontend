@@ -1,8 +1,15 @@
 import React from "react";
 import "../assets/styles/login.css";
 import { useNavigate } from "react-router";
+import { useState } from "react";
 
 function Login() {
+
+  const [loginData, setLoginData] = useState({
+    username:"",
+    password:""
+  })
+  const [error, setError] = useState("")
   const navigate = useNavigate();
 
   const togglePassword = () => {
@@ -20,8 +27,28 @@ function Login() {
     }
   };
 
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setLoginData({
+      ...loginData,
+      [name]: value,
+    });
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
+
+    if (!loginData.username || !loginData.password) {
+      setError("Username and password are required.");
+      return;
+    }
+
+    // Perform login logic here (e.g., API call)
+    console.log("Login Data:", loginData);
+
+    // Reset error if any
+    setError("");
+
     navigate("/home");
   };
 
@@ -32,13 +59,21 @@ function Login() {
         <div className="box">
           <h2>Login</h2>
           <form method="post" onSubmit={handleSubmit}>
-            <input type="text" placeholder="username" required></input>
+            <input type="text"
+                   placeholder="username"
+                   name="username"
+                   value={loginData.username}
+                   onChange={handleInputChange}
+                   required></input>
 
-            <div class="relative">
+            <div className="relative">
               <input
                 id="password"
                 type="password"
                 placeholder="password"
+                name="password"
+                value={loginData.password}
+                onChange={handleInputChange}
                 required
               ></input>
               <button
@@ -46,7 +81,7 @@ function Login() {
                 className="toggle-button"
                 onClick={togglePassword}
               >
-                <i id="toggle-icon" class="fa-regular fa-eye-slash"></i>
+                <i id="toggle-icon" className="fa-regular fa-eye-slash"></i>
               </button>
             </div>
 
@@ -54,6 +89,7 @@ function Login() {
               Enter
             </button>
           </form>
+          <p>Create an account? <a title="signup" href="/signup" style={{ color: "blue", textDecoration: "underline" }}>Sign-up</a></p>
         </div>
       </div>
     </div>
