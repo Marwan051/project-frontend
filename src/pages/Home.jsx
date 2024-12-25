@@ -1,61 +1,38 @@
-import { useRef } from "react";
-import "../assets/styles/home.css";
-import { FiHome } from "react-icons/fi";
-import { GoPlusCircle } from "react-icons/go";
-import { CiSearch } from "react-icons/ci";
-import AddPost from "../components/AddPost";
-import Post from "../components/Post";
-import noPhotoImage from "../assets/images/no-photo.jpg"; // Adjust path based on file structure
+import { useRef, useState, useEffect } from "react";
 
+import ScrollView from "../components/ScrollView";
+import SideBar from "../components/SideBar";
+import { getFeedScrollContent } from "../services/getFeed";
+import Loading from "../components/Loading";
 function Home() {
-  const dialogRef = useRef(null);
-  const openDialog = () => {
-    dialogRef.current.showModal();
-  };
+  const scrollRef = useRef(null);
+  const [feedPosts, setFeedPosts] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
 
-  const closeDialog = () => {
-    dialogRef.current.close();
-  };
+  useEffect(() => {
+    const fetchFeed = async () => {
+      try {
+        const getFeed = await getFeedScrollContent();
+        if (getFeed) {
+          setFeedPosts(getFeed);
+        }
+      } catch (error) {
+        console.error("Error fetching feed:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchFeed();
+  }, []); // Empty dependency array means run once on mount
+  if (isLoading) {
+    return <Loading />;
+  }
+
   return (
     <div className="home">
-      <div className="sidebar">
-        <div className="top">
-          <h1 className="title">Flower Garden</h1>
-          <div className="icons">
-            <FiHome
-              onClick={() => {
-                location.reload();
-              }}
-            />
-            <GoPlusCircle onClick={openDialog} />
-            <AddPost ref={dialogRef} onClose={closeDialog} />
-            <CiSearch />
-          </div>
-        </div>
-        <div className="bottom">
-          <h2 className="notifications-title">Notifications</h2>
-        </div>
-      </div>
-      <div className="infinite-scroll">
-        <Post
-          userImage={noPhotoImage}
-          username="johndoe"
-          postImage={noPhotoImage}
-          postText="Optional caption text here"
-        />
-        <Post
-          userImage={noPhotoImage}
-          username="johndoe"
-          postImage={noPhotoImage}
-          postText="Optional caption text here"
-        />
-        <Post
-          userImage={noPhotoImage}
-          username="johndoe"
-          postImage={noPhotoImage}
-          postText="Optional caption text here"
-        />
-      </div>
+      <SideBar scrollRef={scrollRef} />
+      <ScrollView scrollRef={scrollRef} posts={feedPosts} />
     </div>
   );
 }

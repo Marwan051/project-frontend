@@ -1,35 +1,95 @@
 import { createContext, useContext, useState, ReactNode } from "react";
-
+import { useEffect } from "react";
+import { Login, Signup } from "../services/Authorization";
 const AuthContext = createContext(undefined);
 
-export const AuthProvider = ({ children }) => {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+const AuthProvider = ({ children }) => {
+  const [isAuthenticated, setIsAuthenticated] = useState(() => {
+    return localStorage.getItem("token") !== null;
+  });
+  const [token, setToken] = useState(() => {
+    return localStorage.getItem("token");
+  });
+  const [user, setUser] = useState(() => {
+    return localStorage.getItem("user");
+  });
+  const [userId, setUserId] = useState(() => {
+    return localStorage.getItem("userId");
+  });
+  useEffect(() => {
+    if (token) {
+      localStorage.setItem("token", token);
+      setIsAuthenticated(true);
+    } else {
+      localStorage.removeItem("token");
+      localStorage.removeItem("userId");
+      localStorage.removeItem("user");
+      setIsAuthenticated(false);
+      setUserId(null);
+    }
+  }, [token]);
+  const login = async (username, password) => {
+    const response = await Login(username, password);
+    if (response.error) {
+      alert(response.error);
+      return false;
+    }
 
-  const login = () => {
-    // To be implemented Login logic
+    localStorage.setItem("token", response.token);
+    localStorage.setItem("user", username);
+    localStorage.setItem("userId", response.user.userid);
+
+    setToken(response.token);
+    setUser(username);
+    setUserId(response.user.userid);
     setIsAuthenticated(true);
+
+    return true;
   };
+
   const logout = () => {
-    // To be implemented Logout logic
     setIsAuthenticated(false);
+    setUser(null);
+    setToken(null);
+    setUserId(null);
+    localStorage.removeItem("token");
+    localStorage.removeItem("userId");
+    localStorage.removeItem("user");
   };
 
-  const signup = () => {
-    // To be implemented Signup logic
+  const signup = async (username, password, bio, avatar) => {
+    const response = await Signup(username, password, bio, avatar);
+    console.log(response);
+    if (response.user.username !== username) {
+      alert("Error signing up");
+      return false;
+    }
+    setToken(response.token);
+    setUser(username);
     setIsAuthenticated(true);
+    setUserId(response.user.userid);
+    localStorage.setItem("userId", userId);
+    localStorage.setItem("user", username);
+    localStorage.setItem("token", token);
+    return true;
   };
 
   return (
-    <AuthContext.Provider value={{ isAuthenticated, login, logout, signup }}>
+    <AuthContext.Provider
+      value={{ isAuthenticated, login, logout, signup, token, user, userId }}
+    >
       {children}
     </AuthContext.Provider>
   );
 };
 
-export const useAuth = () => {
+const useAuth = () => {
   const context = useContext(AuthContext);
   if (!context) {
     throw new Error("useAuth must be used within an AuthProvider");
   }
   return context;
 };
+
+export { AuthProvider };
+export default useAuth;

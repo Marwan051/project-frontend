@@ -1,51 +1,51 @@
 import { forwardRef, useState, useRef } from "react";
-import noPhotoImage from "../assets/images/no-photo.jpg"; // Adjust path as needed
-import { GoPlus } from "react-icons/go"; // Using react-icons
+import noPhotoImage from "../assets/images/no-photo.jpg";
+import { GoPlus } from "react-icons/go";
 import { FiEdit } from "react-icons/fi";
+import { createPost } from "../services/postActions";
 
 const AddPost = forwardRef(({ onClose }, ref) => {
   const [image, setImage] = useState(null);
   const [text, setText] = useState("");
+  const [showPopup, setShowPopup] = useState(false);
   const fileInputRef = useRef(null);
 
   const handleClosing = (e) => {
-    if (e.target === e.currentTarget) {
-      setImage((prev) => null);
-      setText((prev) => "");
-      fileInputRef.current.value = "";
-      ref.current.close();
-      if (onClose) {
-        onClose();
-      }
+    setImage(null);
+    setText("");
+    fileInputRef.current.value = "";
+    ref.current.close();
+    if (onClose) {
+      onClose();
     }
   };
-  const handleSubmit = (e) => {
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
     if (!image) {
       alert("Please select an image");
       return;
     }
 
-    // handle post submission
-    console.log({ image, text });
-    handleClosing(e);
-    return;
+    const response = await createPost(text, image);
+    if (!response) {
+      alert("Failed to create post");
+      return;
+    }
+
+    setShowPopup(true);
+    setTimeout(() => {
+      setShowPopup(false);
+      handleClosing(e);
+    }, 3000);
   };
 
   const handleImageClick = () => {
     fileInputRef.current.click();
   };
 
-  const handleImageChange = (e) => {
-    if (e.target.files[0]) {
-      setImage(URL.createObjectURL(e.target.files[0]));
-    }
-  };
-  const handleTextChange = (e) => {
-    setText(e.target.value);
-  };
-
   return (
-    <dialog ref={ref} className="custom-dialog" onClick={handleClosing}>
+    <dialog ref={ref} className="custom-dialog">
       <div className="dialog-content">
         <header className="dialog-header">
           <h2>Create Post</h2>
@@ -71,7 +71,7 @@ const AddPost = forwardRef(({ onClose }, ref) => {
               type="file"
               ref={fileInputRef}
               accept="image/*"
-              onChange={handleImageChange}
+              onChange={(e) => setImage(URL.createObjectURL(e.target.files[0]))}
               style={{ display: "none" }}
             />
           </div>
@@ -79,22 +79,20 @@ const AddPost = forwardRef(({ onClose }, ref) => {
             <div className="post-input-container">
               <textarea
                 value={text}
-                onChange={handleTextChange}
+                onChange={(e) => setText(e.target.value)}
                 placeholder="Caption"
                 className="post-input"
               />
             </div>
             <div className="dialog-submit-button-container">
-              <button
-                className="dialog-submit-button"
-                onClick={(e) => handleSubmit(e)}
-              >
+              <button className="dialog-submit-button" onClick={handleSubmit}>
                 Post
               </button>
             </div>
           </div>
         </main>
       </div>
+      {showPopup && <div className="popup">Post created successfully!</div>}
     </dialog>
   );
 });

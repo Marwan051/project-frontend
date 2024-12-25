@@ -13,7 +13,7 @@ function App() {
 
         <Route element={<ProtectedRoutes />}>
           <Route path="/home" element={<Home />} />
-          <Route path="/profile" element={<Profile />} />
+          <Route path="/profile/:userid/:username" element={<Profile />} />
         </Route>
 
         <Route element={<BlockLogin />}>

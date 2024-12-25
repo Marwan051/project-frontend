@@ -2,14 +2,15 @@ import React from "react";
 import "../assets/styles/login.css";
 import { useNavigate } from "react-router";
 import { useState } from "react";
-
+import useAuth from "../components/AuthContext";
 function Login() {
+  const { login } = useAuth();
 
   const [loginData, setLoginData] = useState({
-    username:"",
-    password:""
-  })
-  const [error, setError] = useState("")
+    username: "",
+    password: "",
+  });
+  const [error, setError] = useState("");
   const navigate = useNavigate();
 
   const togglePassword = () => {
@@ -42,14 +43,11 @@ function Login() {
       setError("Username and password are required.");
       return;
     }
-
-    // Perform login logic here (e.g., API call)
-    console.log("Login Data:", loginData);
-
-    // Reset error if any
-    setError("");
-
-    navigate("/home");
+    const response = login(loginData.username, loginData.password);
+    if (response) {
+      setError("");
+      navigate("/home");
+    }
   };
 
   return (
@@ -59,12 +57,14 @@ function Login() {
         <div className="box">
           <h2>Login</h2>
           <form method="post" onSubmit={handleSubmit}>
-            <input type="text"
-                   placeholder="username"
-                   name="username"
-                   value={loginData.username}
-                   onChange={handleInputChange}
-                   required></input>
+            <input
+              type="text"
+              placeholder="username"
+              name="username"
+              value={loginData.username}
+              onChange={handleInputChange}
+              required
+            ></input>
 
             <div className="relative">
               <input
@@ -89,7 +89,16 @@ function Login() {
               Enter
             </button>
           </form>
-          <p>Create an account? <a title="signup" href="/signup" style={{ color: "blue", textDecoration: "underline" }}>Sign-up</a></p>
+          <p>
+            Create an account?{" "}
+            <a
+              title="signup"
+              href="/signup"
+              style={{ color: "blue", textDecoration: "underline" }}
+            >
+              Sign-up
+            </a>
+          </p>
         </div>
       </div>
     </div>
