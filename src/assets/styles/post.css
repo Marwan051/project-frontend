@@ -7,7 +7,7 @@
   padding: 20px;
   font-family: "Times New Roman", Times, serif;
   display: flex;
-  flex-direction: column;
+  flex-direction: column-reverse;
 }
 .post-container {
   width: 100%;
@@ -217,4 +217,18 @@
   display: flex;
   justify-content: center;
   align-items: center;
+}
+.edit-button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  margin-left: auto;
+  color: #ab9478;
+  padding: 8px;
+  transition: all 0.2s ease;
+}
+
+.edit-button:hover {
+  color: #cfbca5;
+  transform: scale(1.1);
 }

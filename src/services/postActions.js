@@ -7,7 +7,9 @@ const createPost = async (caption, image) => {
     const formData = new FormData();
     formData.append("caption", caption);
     formData.append("image", blob, "image.jpg");
-
+    console.log("Blob type:", blob.type);
+    console.log("Blob size:", blob.size);
+    return false;
     const postResponse = await fetch(
       "https://decent-shirlee-blasome-c39fcfbb.koyeb.app/api/post",
       {
@@ -82,34 +84,34 @@ const removeLike = async (postId) => {
   }
   return "";
 };
-const editPost = async (userid, caption, image) => {
-  try {
+const editPost = async (postId, caption, image) => {
+  const formData = new FormData();
+  formData.append("postid", postId);
+  formData.append("caption", caption);
+  if (image) {
     const response = await fetch(image);
     const blob = await response.blob();
-
-    const formData = new FormData();
-    formData.append("userid", userid);
-    formData.append("caption", caption);
     formData.append("image", blob, "image.jpg");
+  }
 
-    const postResponse = await fetch(
-      "https://decent-shirlee-blasome-c39fcfbb.koyeb.app/api/post",
+  try {
+    const response = await fetch(
+      `https://decent-shirlee-blasome-c39fcfbb.koyeb.app/api/post`,
       {
         method: "PUT",
         headers: {
           Authorization: `token ${localStorage.getItem("token")}`,
         },
-        credentials: "include",
         body: formData,
       }
     );
-    const data = await postResponse.json();
-    console.log("Response:", data);
-    return postResponse.status === 200;
+
+    const data = await response.json();
+    return response.ok;
   } catch (error) {
-    console.error("Error creating post:", error);
+    console.error("Error editing post:", error);
     return false;
   }
 };
 
-export { createPost, deletePost, addLike, removeLike };
+export { createPost, deletePost, addLike, removeLike, editPost };

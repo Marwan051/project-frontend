@@ -8,6 +8,9 @@ function ScrollView({ scrollRef, posts }) {
     </div>
   ) : (
     <div className="infinite-scroll" ref={scrollRef}>
+      <div className="no-more-posts">
+        <span>No more posts to show...</span>
+      </div>
       {posts.map((post, index) => (
         <Post
           key={index}
@@ -20,9 +23,6 @@ function ScrollView({ scrollRef, posts }) {
           userid={post.user.userid}
         />
       ))}
-      <div className="no-more-posts">
-        <span>No more posts to show...</span>
-      </div>
     </div>
   );
 }

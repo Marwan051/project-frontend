@@ -77,14 +77,16 @@ const Profile = () => {
           </div>
         </div>
         <div className="end">
-          <button
-            className={`follow-btn ${
-              followed.length === 0 ? null : "followed"
-            }`}
-            onClick={handleClick}
-          >
-            {followed ? "Following" : "Follow"}
-          </button>
+          {userId === userData.userid ? null : (
+            <button
+              className={`follow-btn ${
+                followed.length === 0 ? null : "followed"
+              }`}
+              onClick={handleClick}
+            >
+              {followed ? "Following" : "Follow"}
+            </button>
+          )}
         </div>
       </div>
       <ScrollView

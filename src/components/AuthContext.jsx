@@ -48,13 +48,13 @@ const AuthProvider = ({ children }) => {
   };
 
   const logout = () => {
-    setIsAuthenticated(false);
     setUser(null);
-    setToken(null);
     setUserId(null);
-    localStorage.removeItem("token");
     localStorage.removeItem("userId");
     localStorage.removeItem("user");
+    localStorage.removeItem("token");
+    setToken(null);
+    setIsAuthenticated(false);
   };
 
   const signup = async (username, password, bio, avatar) => {
@@ -64,13 +64,14 @@ const AuthProvider = ({ children }) => {
       alert("Error signing up");
       return false;
     }
+    localStorage.setItem("token", response.token);
+    localStorage.setItem("user", username);
+    localStorage.setItem("userId", response.user.userid);
+
     setToken(response.token);
     setUser(username);
-    setIsAuthenticated(true);
     setUserId(response.user.userid);
-    localStorage.setItem("userId", userId);
-    localStorage.setItem("user", username);
-    localStorage.setItem("token", token);
+    setIsAuthenticated(true);
     return true;
   };
 

@@ -7,6 +7,9 @@ import { getIsLiked } from "../services/getFeed";
 import useAuth from "./AuthContext";
 import nouserphoto from "../assets/images/default_profile.svg";
 import { useNavigate } from "react-router";
+import { useRef } from "react";
+import { FiEdit } from "react-icons/fi";
+import AddPost from "./AddPost";
 function Post({
   userImage,
   username,
@@ -18,7 +21,16 @@ function Post({
 }) {
   const [likeid, setLikeid] = useState("");
   const { userId } = useAuth();
+  const [showEditDialog, setShowEditDialog] = useState(false);
+  const dialogRef = useRef(null);
+  const isOwner = userid === userId;
   const navigate = useNavigate();
+
+  const handleEditClick = () => {
+    setShowEditDialog(true);
+    dialogRef.current?.showModal();
+  };
+
   useEffect(() => {
     const getLikeStat = async () => {
       const response = await getIsLiked(postId, userId);
@@ -60,6 +72,11 @@ function Post({
           className="user-avatar"
         />
         <span className="username">{username}</span>
+        {isOwner && (
+          <button className="edit-button" onClick={handleEditClick}>
+            <FiEdit />
+          </button>
+        )}
         {username === user && <div className="delete Icon"></div>}
       </div>
 
@@ -87,6 +104,18 @@ function Post({
           </span>
         </div>
       </button>
+      {showEditDialog && (
+        <AddPost
+          ref={dialogRef}
+          onClose={() => setShowEditDialog(false)}
+          editMode={true}
+          initialPost={{
+            postId,
+            text: postText,
+            image: postImage,
+          }}
+        />
+      )}
     </div>
   );
 }
