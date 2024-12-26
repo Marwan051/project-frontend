@@ -65,6 +65,8 @@ function Signup() {
       setError("");
       setIsLoading(false);
       navigate("/home");
+    } else {
+      alert("Error Signup");
     }
   };
   if (isLoading) {
