@@ -120,7 +120,7 @@ function Post({
             <RiFlowerLine className="fill" />
           )}
           <span className="like-count">
-            {likeid.length !== 0 ? likeCount + 1 : likeCount}
+            {likeid.length !== 0 ? ActualLikedCount + 1 : ActualLikedCount}
           </span>
         </div>
       </button>
