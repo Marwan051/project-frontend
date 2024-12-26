@@ -1,78 +1,75 @@
-import { useState, useEffect, useRef } from "react";
-import { RiFlowerLine, RiFlowerFill } from "react-icons/ri";
-import { FiEdit } from "react-icons/fi";
-import { RiDeleteBin4Line } from "react-icons/ri";
+import { useEffect, useState } from "react";
+import { RiFlowerFill, RiFlowerLine } from "react-icons/ri";
+import "../assets/styles/post.css";
+import { addLike, deletePost, removeLike } from "../services/postActions";
 import noPhoto from "../assets/images/no-photo.jpg";
+import { getIsLiked } from "../services/getFeed";
+import useAuth from "./AuthContext";
 import nouserphoto from "../assets/images/default_profile.svg";
 import { useNavigate } from "react-router";
-import useAuth from "../components/AuthContext";
+import { useRef } from "react";
+import { FiEdit } from "react-icons/fi";
 import AddPost from "./AddPost";
-import { addLike, removeLike } from "../services/postActions";
-import { getIsLiked } from "../services/getFeed";
-const Post = ({
+import { RiDeleteBin4Line } from "react-icons/ri";
+function Post({
   userImage,
   username,
   postImage,
   postText,
   postId,
-  likeCount: initialLikeCount,
+  likeCount,
   userid,
-}) => {
-  const [isLiked, setIsLiked] = useState(false);
-  const [likeCount, setLikeCount] = useState(initialLikeCount);
-  const [showEditDialog, setShowEditDialog] = useState(false);
+}) {
+  const [likeid, setLikeid] = useState("");
+  const [ActualLikedCount, setActualLikedCount] = useState(likeCount);
   const { userId } = useAuth();
-  const navigate = useNavigate();
+  const [showEditDialog, setShowEditDialog] = useState(false);
   const dialogRef = useRef(null);
   const isOwner = userid === userId;
-
-  useEffect(() => {
-    const checkLikeStatus = async () => {
-      try {
-        const likeStatus = await getIsLiked(postId);
-        setIsLiked(likeStatus);
-      } catch (error) {
-        console.error("Error checking like status:", error);
-      }
-    };
-    checkLikeStatus();
-  }, [postId]);
-
-  const handleLike = async () => {
-    try {
-      if (isLiked) {
-        await removeLike(postId);
-        setLikeCount((prev) => prev - 1);
-      } else {
-        await addLike(postId);
-        setLikeCount((prev) => prev + 1);
-      }
-      setIsLiked(!isLiked);
-    } catch (error) {
-      console.error("Error handling like:", error);
-    }
-  };
-
+  const navigate = useNavigate();
+  console.log("postText", postText);
   const handleEditClick = () => {
     setShowEditDialog(true);
+    dialogRef.current?.showModal();
   };
 
   const handleDeleteClick = async () => {
     try {
-      const confirmed = window.confirm(
-        "Are you sure you want to delete this post?"
-      );
-      if (!confirmed) return;
-
-      const success = await deletePost(postId);
-      if (success) {
-        window.location.reload();
+      const deleteResponse = await deletePost(postId);
+      if (deleteResponse) {
+        alert("Post deleted successfully");
       } else {
-        throw new Error("Failed to delete post");
+        alert("Error deleting post");
+      }
+    } catch {
+      alert("Error deleting post");
+    }
+  };
+
+  useEffect(() => {
+    const getLikeStat = async () => {
+      const response = await getIsLiked(postId, userId);
+      console.log(response);
+      setActualLikedCount(likeCount - 1);
+      setLikeid(response);
+    };
+    getLikeStat();
+  }, []);
+
+  console.log(postImage);
+  const { user } = { user: "test_user" };
+  const handleLike = async () => {
+    try {
+      if (likeid.length !== 0) {
+        const likedResponse = await removeLike(postId);
+        setLikeid(likedResponse);
+      } else {
+        const likedResponse = await addLike(postId);
+        setLikeid(likedResponse);
       }
     } catch (error) {
-      console.error("Delete error:", error);
-      alert("Failed to delete post. Please try again.");
+      console.error("Error liking post:", error);
+      alert("Error liking post");
     }
   };
 
@@ -80,7 +77,10 @@ const Post = ({
     <div className="post-container">
       <div
         className="post-header"
-        onClick={() => navigate(`/profile/${userid}/${username}`)}
+        onClick={() => {
+          console.log(`/profile/${userid}/${username}`);
+          navigate(`/profile/${userid}/${username}`);
+        }}
       >
         <img
           src={userImage ?? nouserphoto}
@@ -89,14 +89,14 @@ const Post = ({
         />
         <span className="username">{username}</span>
         {isOwner && (
-          <>
+          <div>
             <button className="edit-button" onClick={handleEditClick}>
               <FiEdit />
             </button>
             <button className="delete-button" onClick={handleDeleteClick}>
               <RiDeleteBin4Line />
             </button>
-          </>
+          </div>
         )}
       </div>
 
@@ -109,21 +109,21 @@ const Post = ({
       </div>
 
       {postText && <div className="post-text">{postText}</div>}
-
       <button
-        className={`like-button ${isLiked ? "liked" : ""}`}
+        className={`like-button ${likeid.length !== 0 ? "liked" : ""}`}
         onClick={handleLike}
       >
         <div className="like-content">
-          {isLiked ? (
-            <RiFlowerLine className="fill" />
-          ) : (
+          {likeid.length === 0 ? (
             <RiFlowerFill className="nofill" />
+          ) : (
+            <RiFlowerLine className="fill" />
           )}
-          <span className="like-count">{likeCount}</span>
+          <span className="like-count">
+            {likeid.length !== 0 ? likeCount + 1 : likeCount}
+          </span>
         </div>
       </button>
-
       {showEditDialog && (
         <AddPost
           ref={dialogRef}
@@ -138,6 +138,6 @@ const Post = ({
       )}
     </div>
   );
-};
+}
 
 export default Post;
