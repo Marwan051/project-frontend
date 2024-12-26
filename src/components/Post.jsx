@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { RiFlowerLine, RiFlowerFill } from "react-icons/ri";
 import { FiEdit } from "react-icons/fi";
 import { RiDeleteBin4Line } from "react-icons/ri";
@@ -7,8 +7,8 @@ import nouserphoto from "../assets/images/default_profile.svg";
 import { useNavigate } from "react-router";
 import useAuth from "../components/AuthContext";
 import AddPost from "./AddPost";
-import { like, unlike, getIsLiked } from "../services/postActions";
-
+import { addLike, removeLike } from "../services/postActions";
+import { getIsLiked } from "../services/getFeed";
 const Post = ({
   userImage,
   username,
@@ -41,10 +41,10 @@ const Post = ({
   const handleLike = async () => {
     try {
       if (isLiked) {
-        await unlike(postId);
+        await removeLike(postId);
         setLikeCount((prev) => prev - 1);
       } else {
-        await like(postId);
+        await addLike(postId);
         setLikeCount((prev) => prev + 1);
       }
       setIsLiked(!isLiked);
