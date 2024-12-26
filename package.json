@@ -1,6 +1,6 @@
 {
   "name": "project-frontend",
-  "homepage": "https://bassemnagy.github.io/project-frontend",
+  "homepage": "https://Marwan051.github.io/project-frontend",
   "private": true,
   "version": "0.0.0",
   "type": "module",
@@ -10,7 +10,7 @@
     "lint": "eslint .",
     "preview": "vite preview",
     "predeploy": "npm run build",
-    "deploy": "gh-pages -d build"
+    "deploy": "gh-pages -d dist"
   },
   "dependencies": {
     "react": "^18.3.1",

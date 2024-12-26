@@ -3,8 +3,10 @@ import "../assets/styles/login.css";
 import { useNavigate } from "react-router";
 import { useState } from "react";
 import useAuth from "../components/AuthContext";
+import Loading from "../components/Loading";
 function Login() {
   const { login } = useAuth();
+  const [isLoading, setIsLoading] = useState(false);
 
   const [loginData, setLoginData] = useState({
     username: "",
@@ -36,20 +38,23 @@ function Login() {
     });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-
+    setIsLoading(true);
     if (!loginData.username || !loginData.password) {
       setError("Username and password are required.");
       return;
     }
-    const response = login(loginData.username, loginData.password);
+    const response = await login(loginData.username, loginData.password);
     if (response) {
       setError("");
+      setIsLoading(false);
       navigate("/home");
     }
   };
-
+  if (isLoading) {
+    return <Loading />;
+  }
   return (
     <div className="background">
       <div className="card">

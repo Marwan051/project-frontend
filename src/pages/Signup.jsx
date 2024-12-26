@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import "../assets/styles/login.css";
 import { useNavigate } from "react-router";
 import useAuth from "../components/AuthContext";
+import Loading from "../components/Loading";
 
 function Signup() {
   const { signup } = useAuth();
@@ -13,6 +14,8 @@ function Signup() {
   });
   const [file, setFile] = useState(null);
   const [error, setError] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+
   const navigate = useNavigate();
 
   const togglePassword = () => {
@@ -44,19 +47,15 @@ function Signup() {
     setFile(selectedFile);
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-
+    setIsLoading(true);
     if (!registerData.username || !registerData.password) {
       setError("The first 3 fields are required.");
       return;
     }
 
-    // Simulate form submission
-    console.log("Register Data:", registerData);
-    console.log("Image:", file);
-
-    const response = signup(
+    const response = await signup(
       registerData.username,
       registerData.password,
       registerData.bio,
@@ -64,9 +63,13 @@ function Signup() {
     );
     if (response) {
       setError("");
+      setIsLoading(false);
+      navigate("/home");
     }
   };
-
+  if (isLoading) {
+    return <Loading />;
+  }
   return (
     <div className="background">
       <div className="card">

@@ -6,10 +6,8 @@ const createPost = async (caption, image) => {
 
     const formData = new FormData();
     formData.append("caption", caption);
-    formData.append("image", blob, "image.jpg");
-    console.log("Blob type:", blob.type);
-    console.log("Blob size:", blob.size);
-    return false;
+    formData.append("image", blob);
+
     const postResponse = await fetch(
       "https://decent-shirlee-blasome-c39fcfbb.koyeb.app/api/post",
       {
@@ -32,17 +30,30 @@ const createPost = async (caption, image) => {
 };
 
 const deletePost = async (postId) => {
-  const response = await fetch(
-    "https://decent-shirlee-blasome-c39fcfbb.koyeb.app/api/post",
-    {
-      method: "DELETE",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `token ${localStorage.getItem("token")}`,
-      },
-      body: JSON.stringify({ postId }),
+  try {
+    const formData = new FormData();
+    formData.append("postid", postId);
+    const response = await fetch(
+      "https://decent-shirlee-blasome-c39fcfbb.koyeb.app/api/post",
+      {
+        method: "DELETE",
+        headers: {
+          Authorization: `token ${localStorage.getItem("token")}`,
+        },
+        body: formData,
+        credentials: "include",
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
     }
-  );
+
+    return true; // Explicit success return
+  } catch (error) {
+    console.error("Delete post error:", error);
+    return false;
+  }
 };
 const addLike = async (postId) => {
   const response = await fetch(
@@ -91,7 +102,7 @@ const editPost = async (postId, caption, image) => {
   if (image) {
     const response = await fetch(image);
     const blob = await response.blob();
-    formData.append("image", blob, "image.jpg");
+    formData.append("image", blob);
   }
 
   try {

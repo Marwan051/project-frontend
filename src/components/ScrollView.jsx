@@ -1,7 +1,16 @@
 import Post from "./Post";
 import "../assets/styles/post.css";
+import { useLayoutEffect } from "react";
 
 function ScrollView({ scrollRef, posts }) {
+  useLayoutEffect(() => {
+    if (scrollRef.current) {
+      setTimeout(() => {
+        scrollRef.current.scrollTop = -scrollRef.current.scrollHeight;
+      }, 0);
+    }
+  }, []);
+
   return posts.length === 0 ? (
     <div className="no-posts-wrapper">
       <span className="no-posts">No posts Found</span>
@@ -17,7 +26,7 @@ function ScrollView({ scrollRef, posts }) {
           userImage={post.user.avatar}
           username={post.user.username}
           postImage={post.post.image}
-          postText={post.post.text}
+          postText={post.post.caption}
           postId={post.post.postid}
           likeCount={post.post.likes_no}
           userid={post.user.userid}

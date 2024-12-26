@@ -12,6 +12,7 @@ const AddPost = forwardRef(
     const [showPopup, setShowPopup] = useState(false);
     const fileInputRef = useRef(null);
     const [isDialogReady, setIsDialogReady] = useState(false);
+    const [loading, setLoading] = useState(false);
 
     useEffect(() => {
       if (ref.current && editMode) {
@@ -36,6 +37,8 @@ const AddPost = forwardRef(
 
     const handleSubmit = async (e) => {
       e.preventDefault();
+      setLoading(true);
+
       if (!image) {
         alert("Please select an image");
         return;
@@ -59,6 +62,8 @@ const AddPost = forwardRef(
       } catch (error) {
         console.error("Error submitting post:", error);
         alert(`Error ${editMode ? "editing" : "creating"} post`);
+      } finally {
+        setLoading(false);
       }
     };
     const handleImageClick = () => {
@@ -67,6 +72,11 @@ const AddPost = forwardRef(
 
     return (
       <dialog ref={ref} className="custom-dialog">
+        {loading && (
+          <div className="loading-overlay">
+            <span className="loading-text">Posting...</span>
+          </div>
+        )}
         <div className="dialog-content">
           <header className="dialog-header">
             <h2>{editMode ? "Edit Post" : "Create Post"}</h2>
@@ -109,14 +119,22 @@ const AddPost = forwardRef(
                 />
               </div>
               <div className="dialog-submit-button-container">
-                <button className="dialog-submit-button" onClick={handleSubmit}>
-                  Post
+                <button
+                  className="dialog-submit-button"
+                  onClick={handleSubmit}
+                  disabled={loading}
+                >
+                  {loading ? "Posting..." : "Post"}
                 </button>
               </div>
             </div>
           </main>
         </div>
-        {showPopup && <div className="popup">Post created successfully!</div>}
+        {showPopup && (
+          <div className="popup">
+            Post {!editMode ? "created" : "edited"} successfully!
+          </div>
+        )}
       </dialog>
     );
   }

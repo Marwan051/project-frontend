@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { RiFlowerFill, RiFlowerLine } from "react-icons/ri";
 import "../assets/styles/post.css";
-import { addLike, removeLike } from "../services/postActions";
+import { addLike, deletePost, removeLike } from "../services/postActions";
 import noPhoto from "../assets/images/no-photo.jpg";
 import { getIsLiked } from "../services/getFeed";
 import useAuth from "./AuthContext";
@@ -10,7 +10,8 @@ import { useNavigate } from "react-router";
 import { useRef } from "react";
 import { FiEdit } from "react-icons/fi";
 import AddPost from "./AddPost";
-function Post({
+import { RiDeleteBin4Line } from "react-icons/ri";
+const Post = ({
   userImage,
   username,
   postImage,
@@ -18,19 +19,37 @@ function Post({
   postId,
   likeCount,
   userid,
-}) {
+}) => {
   const [likeid, setLikeid] = useState("");
   const { userId } = useAuth();
   const [showEditDialog, setShowEditDialog] = useState(false);
   const dialogRef = useRef(null);
   const isOwner = userid === userId;
   const navigate = useNavigate();
-
+  console.log("postText", postText);
   const handleEditClick = () => {
     setShowEditDialog(true);
     dialogRef.current?.showModal();
   };
 
+  const handleDeleteClick = async () => {
+    try {
+      const confirmed = window.confirm(
+        "Are you sure you want to delete this post?"
+      );
+      if (!confirmed) return;
+
+      const success = await deletePost(postId);
+      if (success) {
+        window.location.reload();
+      } else {
+        throw new Error("Failed to delete post");
+      }
+    } catch (error) {
+      console.error("Delete error:", error);
+      alert("Failed to delete post. Please try again.");
+    }
+  };
   useEffect(() => {
     const getLikeStat = async () => {
       const response = await getIsLiked(postId, userId);
@@ -41,7 +60,6 @@ function Post({
   }, []);
 
   console.log(postImage);
-  const { user } = { user: "test_user" };
   const handleLike = async () => {
     try {
       if (likeid.length !== 0) {
@@ -73,11 +91,15 @@ function Post({
         />
         <span className="username">{username}</span>
         {isOwner && (
-          <button className="edit-button" onClick={handleEditClick}>
-            <FiEdit />
-          </button>
+          <>
+            <button className="edit-button" onClick={handleEditClick}>
+              <FiEdit />
+            </button>
+            <button className="delete-button" onClick={handleDeleteClick}>
+              <RiDeleteBin4Line />
+            </button>
+          </>
         )}
-        {username === user && <div className="delete Icon"></div>}
       </div>
 
       <div className="post-image-container">
@@ -118,6 +140,6 @@ function Post({
       )}
     </div>
   );
-}
+};
 
 export default Post;

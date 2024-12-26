@@ -10,4 +10,6 @@ html,
 body {
   height: 100%;
   font-family: "Arial", cursive;
+  overflow: hidden;
+  scrollbar-width: none;
 }
