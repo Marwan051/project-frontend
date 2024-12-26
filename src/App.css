@@ -13,3 +13,9 @@ body {
   overflow: hidden;
   scrollbar-width: none;
 }
+.home {
+  height: 100vh;
+  width: 100%;
+  display: flex;
+  overflow: hidden;
+}

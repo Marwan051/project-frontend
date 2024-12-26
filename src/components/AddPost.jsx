@@ -13,6 +13,7 @@ const AddPost = forwardRef(
     const fileInputRef = useRef(null);
     const [isDialogReady, setIsDialogReady] = useState(false);
     const [loading, setLoading] = useState(false);
+    const [isSubmitted, setIsSubmitted] = useState(false);
 
     useEffect(() => {
       if (ref.current && editMode) {
@@ -39,11 +40,6 @@ const AddPost = forwardRef(
       e.preventDefault();
       setLoading(true);
 
-      if (!image) {
-        alert("Please select an image");
-        return;
-      }
-
       try {
         const response = editMode
           ? await editPost(initialPost.postId, text, image)
@@ -54,6 +50,7 @@ const AddPost = forwardRef(
           return;
         }
 
+        setIsSubmitted(true);
         setShowPopup(true);
         setTimeout(() => {
           setShowPopup(false);
@@ -67,6 +64,7 @@ const AddPost = forwardRef(
         setLoading(false);
       }
     };
+
     const handleImageClick = () => {
       fileInputRef.current.click();
     };
@@ -123,9 +121,9 @@ const AddPost = forwardRef(
                 <button
                   className="dialog-submit-button"
                   onClick={handleSubmit}
-                  disabled={loading}
+                  disabled={loading || isSubmitted}
                 >
-                  {loading ? "Posting..." : "Post"}
+                  {loading ? "Posting..." : isSubmitted ? "Posted!" : "Post"}
                 </button>
               </div>
             </div>

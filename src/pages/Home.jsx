@@ -24,7 +24,7 @@ function Home() {
     };
 
     fetchFeed();
-  }, []); // Empty dependency array means run once on mount
+  }, []);
   if (isLoading) {
     return <Loading />;
   }

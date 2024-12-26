@@ -46,10 +46,12 @@ function Login() {
       return;
     }
     const response = await login(loginData.username, loginData.password);
+    setIsLoading(false);
     if (response) {
       setError("");
-      setIsLoading(false);
       navigate("/home");
+    } else {
+      alert("Invalid username or password");
     }
   };
   if (isLoading) {

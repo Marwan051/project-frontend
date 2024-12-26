@@ -7,7 +7,8 @@ const createPost = async (caption, image) => {
     const formData = new FormData();
     formData.append("caption", caption);
     formData.append("image", blob);
-
+    console.log("image:", blob);
+    console.log("imagetype:", blob.type);
     const postResponse = await fetch(
       "https://decent-shirlee-blasome-c39fcfbb.koyeb.app/api/post",
       {
