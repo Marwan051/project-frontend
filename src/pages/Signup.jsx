@@ -146,7 +146,7 @@ function Signup() {
             Aleardy have an account?{" "}
             <a
               title="login"
-              href="/login"
+              onClick={() => navigate("/login")}
               style={{ color: "blue", textDecoration: "underline" }}
             >
               Login

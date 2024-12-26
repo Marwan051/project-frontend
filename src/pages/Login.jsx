@@ -98,7 +98,7 @@ function Login() {
             Create an account?{" "}
             <a
               title="signup"
-              href="/signup"
+              onClick={() => navigate("/signup")}
               style={{ color: "blue", textDecoration: "underline" }}
             >
               Sign-up
