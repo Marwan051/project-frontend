@@ -59,15 +59,17 @@ const SideBar = ({ scrollRef }) => {
               window.location.reload();
               scrollRef.current.scrollTo({ top: 0, behavior: "instant" });
             }}
+            className="sidebar-icon"
           />
-          <GoPlusCircle onClick={openDialog} />
+          <GoPlusCircle onClick={openDialog} className="sidebar-icon" />
           <AddPost ref={dialogRef} onClose={closeDialog} />
           <CiSearch
             onClick={() => {
               setSearch((prev) => !prev);
             }}
+            className="sidebar-icon"
           />
-          <TbLogout2 onClick={() => logout()} />
+          <TbLogout2 onClick={() => logout()} className="sidebar-icon" />
         </div>
       </div>
       <div className="bottom">
