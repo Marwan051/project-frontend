@@ -58,6 +58,7 @@ const AddPost = forwardRef(
         setTimeout(() => {
           setShowPopup(false);
           handleClosing();
+          location.reload();
         }, 3000);
       } catch (error) {
         console.error("Error submitting post:", error);

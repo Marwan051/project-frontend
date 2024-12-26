@@ -91,6 +91,7 @@ const Profile = () => {
       </div>
       <ScrollView
         scrollRef={scrollRef}
+        userImg={userData.avatar}
         posts={profileData.map((post) => ({
           user: {
             userid: userData.userid,
